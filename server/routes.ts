@@ -66,6 +66,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/dashboard/performance-distribution", async (req, res) => {
+    try {
+      const distribution = await storage.getPerformanceDistribution();
+      res.json(distribution);
+    } catch (error) {
+      console.error("Error fetching performance distribution:", error);
+      res.status(500).json({ message: "Failed to fetch performance distribution" });
+    }
+  });
+
   // Student endpoints
   app.get("/api/students", async (req, res) => {
     try {

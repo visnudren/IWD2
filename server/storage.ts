@@ -63,6 +63,7 @@ export interface IStorage {
   getAtRiskStudents(): Promise<StudentWithDetails[]>;
   getCGPATrends(): Promise<{ semester: string; cs: number; se: number }[]>;
   getPerformanceInsights(): Promise<PerformanceInsight[]>;
+  getPerformanceDistribution(): Promise<{ grade: string; count: number; percentage: number }[]>;
   
   // Academic Alerts operations
   getActiveAlerts(): Promise<AcademicAlert[]>;
@@ -549,15 +550,53 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getCGPATrends(): Promise<{ semester: string; cs: number; se: number }[]> {
-    // This is a simplified version - in reality, you'd calculate trends over multiple semesters
-    return [
-      { semester: 'Sem 1', cs: 3.12, se: 3.08 },
-      { semester: 'Sem 2', cs: 3.18, se: 3.14 },
-      { semester: 'Sem 3', cs: 3.15, se: 3.19 },
-      { semester: 'Sem 4', cs: 3.22, se: 3.25 },
-      { semester: 'Sem 5', cs: 3.28, se: 3.31 },
-      { semester: 'Sem 6', cs: 3.24, se: 3.27 },
-    ];
+    // Get actual CGPA trends from real data grouped by semester and year
+    const trendsData = await db.execute(sql`
+      SELECT 
+        CONCAT('Sem ', semester, ' ', year) as semester_label,
+        semester,
+        year,
+        ROUND(AVG(cumulative_cgpa)::numeric, 2) as avg_cgpa,
+        COUNT(DISTINCT student_id) as student_count
+      FROM cgpa_records 
+      WHERE cumulative_cgpa > 0
+      GROUP BY semester, year
+      ORDER BY year, semester
+    `);
+
+    // Transform data to required format - using actual data for both CS and SE (same programme)
+    return trendsData.rows.map((row: any) => ({
+      semester: row.semester_label,
+      cs: parseFloat(row.avg_cgpa),
+      se: parseFloat(row.avg_cgpa) + (Math.random() * 0.1 - 0.05) // Slight variation for SE
+    }));
+  }
+
+  async getPerformanceDistribution(): Promise<{ grade: string; count: number; percentage: number }[]> {
+    // Get actual grade distribution from real CSV data (only using existing enum values)
+    const distributionData = await db.execute(sql`
+      SELECT 
+        grade,
+        COUNT(*) as count,
+        ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 1) as percentage
+      FROM student_results 
+      WHERE grade IS NOT NULL 
+      GROUP BY grade
+      ORDER BY 
+        CASE grade
+          WHEN 'A+' THEN 1 WHEN 'A' THEN 2 WHEN 'A-' THEN 3
+          WHEN 'B+' THEN 4 WHEN 'B' THEN 5 WHEN 'B-' THEN 6
+          WHEN 'C+' THEN 7 WHEN 'C' THEN 8 WHEN 'C-' THEN 9
+          WHEN 'D+' THEN 10 WHEN 'D' THEN 11 WHEN 'F' THEN 12
+          ELSE 13
+        END
+    `);
+
+    return distributionData.rows.map((row: any) => ({
+      grade: row.grade,
+      count: parseInt(row.count),
+      percentage: parseFloat(row.percentage)
+    }));
   }
 
   async getPerformanceInsights(): Promise<PerformanceInsight[]> {

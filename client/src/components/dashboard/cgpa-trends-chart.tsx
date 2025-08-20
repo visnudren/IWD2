@@ -55,25 +55,42 @@ export default function CGPATrendsChart() {
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={trendsData}>
-              <XAxis dataKey="semester" />
-              <YAxis domain={[2.5, 4.0]} />
-              <Tooltip />
+              <XAxis 
+                dataKey="semester" 
+                tick={{ fontSize: 12 }}
+                axisLine={{ stroke: '#E5E7EB' }}
+              />
+              <YAxis 
+                domain={[1.0, 4.0]} 
+                tick={{ fontSize: 12 }}
+                axisLine={{ stroke: '#E5E7EB' }}
+                label={{ value: 'CGPA', angle: -90, position: 'insideLeft' }}
+              />
+              <Tooltip 
+                contentStyle={{
+                  backgroundColor: '#F9FAFB',
+                  border: '1px solid #E5E7EB',
+                  borderRadius: '8px'
+                }}
+              />
               <Legend />
               <Line 
                 type="monotone" 
                 dataKey="cs" 
-                stroke="hsl(var(--primary))" 
-                strokeWidth={2}
+                stroke="#3B82F6" 
+                strokeWidth={3}
                 name="Computer Science"
-                dot={{ fill: "hsl(var(--primary))" }}
+                dot={{ fill: "#3B82F6", strokeWidth: 2, r: 6 }}
+                activeDot={{ r: 8, fill: "#3B82F6" }}
               />
               <Line 
                 type="monotone" 
                 dataKey="se" 
-                stroke="hsl(var(--secondary))" 
-                strokeWidth={2}
+                stroke="#10B981" 
+                strokeWidth={3}
                 name="Software Engineering"
-                dot={{ fill: "hsl(var(--secondary))" }}
+                dot={{ fill: "#10B981", strokeWidth: 2, r: 6 }}
+                activeDot={{ r: 8, fill: "#10B981" }}
               />
             </LineChart>
           </ResponsiveContainer>
