@@ -8,7 +8,7 @@
     max-width: 1800px;
   }
   
-  /* Ensure proper spacing and layout for large screens */
+  /* Dashboard optimizations */
   .dashboard-grid {
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 2rem;
@@ -16,6 +16,64 @@
   
   .card-grid {
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
+  
+  /* Students page optimizations */
+  .students-container {
+    max-width: 1800px;
+    margin: 0 auto;
+  }
+  
+  .student-table-wrapper {
+    max-height: 800px; /* Optimize table height for 1080p */
+  }
+  
+  /* Courses page optimizations */
+  .courses-container {
+    max-width: 1800px;
+    margin: 0 auto;
+  }
+  
+  .courses-grid {
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 2rem;
+  }
+  
+  /* Reports page optimizations */
+  .reports-container {
+    max-width: 1800px;
+    margin: 0 auto;
+  }
+  
+  .report-config-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+  
+  .report-content {
+    max-height: 900px;
+    overflow-y: auto;
+  }
+}
+
+/* General 16:9 layout optimizations for all pages */
+.page-container {
+  min-height: calc(100vh - 4rem); /* Account for navigation */
+  padding: 2rem;
+}
+
+/* Table optimizations for large screens */
+@media (min-width: 1920px) {
+  .data-table {
+    font-size: 0.95rem;
+  }
+  
+  .table-cell {
+    padding: 1rem 0.75rem;
+  }
+  
+  .table-header {
+    padding: 1.25rem 0.75rem;
   }
 }
 
