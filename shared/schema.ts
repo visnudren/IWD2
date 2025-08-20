@@ -27,6 +27,7 @@ export const students = pgTable("students", {
   email: varchar("email").unique().notNull(),
   programme: programmeEnum("programme").notNull(),
   intakeYear: integer("intake_year").notNull(),
+  intake: varchar("intake"), // e.g., "Jun-25", "Apr-25", etc.
   currentSemester: integer("current_semester").notNull().default(1),
   status: statusEnum("status").notNull().default("Active"),
   profileImageUrl: text("profile_image_url"),

@@ -52,23 +52,34 @@ export default function StudentFilters({ filters, onFilterChange }: StudentFilte
         
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Semester
+            Intake
           </label>
           <Select 
             value={filters.semester} 
             onValueChange={(value) => onFilterChange({ semester: value })}
           >
             <SelectTrigger>
-              <SelectValue placeholder="All Semesters" />
+              <SelectValue placeholder="All Intakes" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Semesters</SelectItem>
-              <SelectItem value="1">Semester 1</SelectItem>
-              <SelectItem value="2">Semester 2</SelectItem>
-              <SelectItem value="3">Semester 3</SelectItem>
-              <SelectItem value="4">Semester 4</SelectItem>
-              <SelectItem value="5">Semester 5</SelectItem>
-              <SelectItem value="6">Semester 6</SelectItem>
+              <SelectItem value="all">All Intakes</SelectItem>
+              <SelectItem value="Jun-25">Jun-25</SelectItem>
+              <SelectItem value="Apr-25">Apr-25</SelectItem>
+              <SelectItem value="Feb-25">Feb-25</SelectItem>
+              <SelectItem value="Oct-24">Oct-24</SelectItem>
+              <SelectItem value="Sep-24">Sep-24</SelectItem>
+              <SelectItem value="May-24">May-24</SelectItem>
+              <SelectItem value="Mar-24">Mar-24</SelectItem>
+              <SelectItem value="Jan-24">Jan-24</SelectItem>
+              <SelectItem value="Jan-23">Jan-23</SelectItem>
+              <SelectItem value="Mar-23">Mar-23</SelectItem>
+              <SelectItem value="May-23">May-23</SelectItem>
+              <SelectItem value="Jul-23">Jul-23</SelectItem>
+              <SelectItem value="Sep-23">Sep-23</SelectItem>
+              <SelectItem value="Oct-23">Oct-23</SelectItem>
+              <SelectItem value="Jan-22">Jan-22</SelectItem>
+              <SelectItem value="May-22">May-22</SelectItem>
+              <SelectItem value="Sep-22">Sep-22</SelectItem>
             </SelectContent>
           </Select>
         </div>

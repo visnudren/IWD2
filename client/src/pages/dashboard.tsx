@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import MetricsCards from "@/components/dashboard/metrics-cards";
 import CGPATrendsChart from "@/components/dashboard/cgpa-trends-chart";
 import PerformanceDistribution from "@/components/dashboard/performance-distribution";
@@ -10,6 +11,7 @@ import CollaborativePlanning from "@/components/innovative/collaborative-plannin
 import ThreeDVisualization from "@/components/innovative/3d-visualization";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   Download, 
   FileText, 
@@ -17,10 +19,13 @@ import {
   Upload,
   Brain,
   Users,
-  Box
+  Box,
+  Calendar
 } from "lucide-react";
 
 export default function Dashboard() {
+  const [selectedIntake, setSelectedIntake] = useState<string>("all");
+
   const { data: metrics, isLoading: metricsLoading } = useQuery({
     queryKey: ["/api/dashboard/metrics"],
   });
@@ -35,6 +40,10 @@ export default function Dashboard() {
 
   const { data: recentActivity, isLoading: activityLoading } = useQuery({
     queryKey: ["/api/dashboard/recent-activity"],
+  });
+
+  const { data: availableIntakes } = useQuery({
+    queryKey: ["/api/dashboard/intakes"],
   });
 
   if (metricsLoading) {
@@ -52,12 +61,35 @@ export default function Dashboard() {
         <h1 className="text-3xl font-medium text-gray-900 mb-2">
           Programme Performance Dashboard
         </h1>
-        <p className="text-gray-600 mb-6">
-          UEIS Programme Overview
-        </p>
+        <div className="flex items-center justify-between mb-6">
+          <p className="text-gray-600">
+            UEIS Programme Overview
+          </p>
+          
+          {/* Semester/Intake Filter */}
+          <div className="flex items-center space-x-3">
+            <Calendar className="w-4 h-4 text-gray-500" />
+            <label className="text-sm font-medium text-gray-700">
+              Filter by Intake:
+            </label>
+            <Select value={selectedIntake} onValueChange={setSelectedIntake}>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="All Intakes" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Intakes</SelectItem>
+                {(availableIntakes as string[] || []).map((intake) => (
+                  <SelectItem key={intake} value={intake}>
+                    {intake}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
         {/* Key Performance Indicators */}
-        <MetricsCards metrics={metrics} isLoading={metricsLoading} />
+        <MetricsCards metrics={metrics as any} isLoading={metricsLoading} />
       </div>
 
       {/* Dashboard Content Grid */}
@@ -66,7 +98,7 @@ export default function Dashboard() {
         <div className="lg:col-span-2 space-y-8">
           <CGPATrendsChart />
           <PerformanceDistribution />
-          <StorytellingPanel insights={insights} isLoading={insightsLoading} />
+          <StorytellingPanel insights={insights as any} isLoading={insightsLoading} />
         </div>
 
         {/* Right Column: Quick Actions and Recent Activity */}
@@ -119,8 +151,8 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <AtRiskStudents students={atRiskStudents} isLoading={atRiskLoading} />
-          <RecentActivity activities={recentActivity} isLoading={activityLoading} />
+          <AtRiskStudents students={atRiskStudents as any} isLoading={atRiskLoading} />
+          <RecentActivity activities={recentActivity as any} isLoading={activityLoading} />
         </div>
       </div>
 

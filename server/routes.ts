@@ -25,6 +25,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/dashboard/intakes", async (req, res) => {
+    try {
+      const intakes = await storage.getAvailableIntakes();
+      res.json(intakes);
+    } catch (error) {
+      console.error("Error fetching available intakes:", error);
+      res.status(500).json({ message: "Failed to fetch available intakes" });
+    }
+  });
+
   app.get("/api/dashboard/cgpa-trends", async (req, res) => {
     try {
       const trends = await storage.getCGPATrends();

@@ -74,6 +74,9 @@ export interface IStorage {
   logActivity(activity: InsertActivityLog): Promise<ActivityLog>;
   getRecentActivity(limit?: number): Promise<ActivityLog[]>;
   
+  // Intake operations
+  getAvailableIntakes(): Promise<string[]>;
+  
   // Import/Export operations
   importStudentsFromCSV(csvData: any[]): Promise<{ success: number; errors: string[] }>;
   exportStudentsToCSV(): Promise<any[]>;
@@ -673,6 +676,16 @@ export class DatabaseStorage implements IStorage {
       .from(activityLog)
       .orderBy(desc(activityLog.createdAt))
       .limit(limit);
+  }
+
+  async getAvailableIntakes(): Promise<string[]> {
+    const result = await db
+      .selectDistinct({ intake: students.intake })
+      .from(students)
+      .where(sql`${students.intake} IS NOT NULL`)
+      .orderBy(students.intake);
+    
+    return result.map(row => row.intake!).filter(Boolean);
   }
 
   async importStudentsFromCSV(csvData: any[]): Promise<{ success: number; errors: string[] }> {
