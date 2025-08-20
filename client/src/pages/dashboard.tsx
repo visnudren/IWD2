@@ -20,7 +20,9 @@ import {
   Brain,
   Users,
   Box,
-  Calendar
+  Calendar,
+  Award,
+  AlertTriangle
 } from "lucide-react";
 
 export default function Dashboard() {
@@ -166,6 +168,93 @@ export default function Dashboard() {
           <PredictiveAnalytics />
           <CollaborativePlanning />
           <ThreeDVisualization />
+        </div>
+      </div>
+
+      {/* Academic Performance Summary */}
+      <div className="mt-12">
+        <h2 className="text-2xl font-medium text-gray-900 mb-6 flex items-center">
+          <Users className="w-6 h-6 text-accent mr-3" />
+          Academic Performance Summary
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Dean's List Students */}
+          <Card className="bg-gradient-to-br from-yellow-50 to-amber-50 border-yellow-200">
+            <CardHeader>
+              <CardTitle className="flex items-center text-lg">
+                <Award className="w-5 h-5 text-yellow-600 mr-2" />
+                Dean's List Students
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-yellow-600 mb-2">
+                  {metrics?.deansListCount || 0}
+                </div>
+                <p className="text-sm text-gray-600 mb-4">
+                  CGPA 3.75+ with 12+ credits
+                </p>
+                <div className="space-y-2">
+                  <div className="text-xs text-gray-500">Top Performers:</div>
+                  <div className="text-sm font-medium text-gray-700">
+                    A+/A Grade Students: {Math.round((metrics?.deansListCount || 0) / (metrics?.totalStudents || 1) * 100)}%
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Students on Probation */}
+          <Card className="bg-gradient-to-br from-red-50 to-pink-50 border-red-200">
+            <CardHeader>
+              <CardTitle className="flex items-center text-lg">
+                <AlertTriangle className="w-5 h-5 text-red-600 mr-2" />
+                Students on Probation
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-red-600 mb-2">
+                  {metrics?.probationCount || 0}
+                </div>
+                <p className="text-sm text-gray-600 mb-4">
+                  CGPA below 2.00 for 2+ semesters
+                </p>
+                <div className="space-y-2">
+                  <div className="text-xs text-gray-500">Needs Support:</div>
+                  <div className="text-sm font-medium text-gray-700">
+                    At-risk Rate: {Math.round((metrics?.probationCount || 0) / (metrics?.totalStudents || 1) * 100)}%
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Overall Students */}
+          <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+            <CardHeader>
+              <CardTitle className="flex items-center text-lg">
+                <Users className="w-5 h-5 text-blue-600 mr-2" />
+                Overall Students
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-blue-600 mb-2">
+                  {metrics?.totalStudents || 0}
+                </div>
+                <p className="text-sm text-gray-600 mb-4">
+                  Total UEIS Programme
+                </p>
+                <div className="space-y-2">
+                  <div className="text-xs text-gray-500">Programme Health:</div>
+                  <div className="text-sm font-medium text-gray-700">
+                    Active Rate: {Math.round((metrics?.activeStudents || 0) / (metrics?.totalStudents || 1) * 100)}%
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

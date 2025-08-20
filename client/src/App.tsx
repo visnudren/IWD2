@@ -9,6 +9,7 @@ import Students from "@/pages/students";
 import StudentDetail from "@/pages/student-detail";
 import Courses from "@/pages/courses";
 import Reports from "@/pages/reports";
+import Settings from "@/pages/settings";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -21,6 +22,7 @@ function Router() {
         <Route path="/students/:id" component={StudentDetail} />
         <Route path="/courses" component={Courses} />
         <Route path="/reports" component={Reports} />
+        <Route path="/settings" component={Settings} />
         <Route component={NotFound} />
       </Switch>
     </div>

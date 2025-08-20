@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import NotificationsDropdown from "@/components/notifications/notifications-dropdown";
 import { 
   GraduationCap, 
   BarChart3, 
@@ -59,30 +60,17 @@ export default function Navigation() {
           </div>
           
           <div className="flex items-center space-x-4">
-            <Button 
-              variant="ghost" 
-              size="sm"
-              className="text-white hover:text-blue-200 hover:bg-blue-600 relative"
-            >
-              <Bell className="w-5 h-5" />
-              <Badge className="absolute -top-1 -right-1 bg-error text-white text-xs h-5 w-5 flex items-center justify-center p-0">
-                3
-              </Badge>
-            </Button>
+            <NotificationsDropdown />
             
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-medium">DJ</span>
-              </div>
-              <span className="hidden sm:block text-white text-sm font-medium">Dr. Sarah Johnson</span>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                className="text-white hover:text-blue-200 hover:bg-blue-600"
-              >
-                <ChevronDown className="w-4 h-4" />
-              </Button>
-            </div>
+            <Link href="/settings">
+              <a className="flex items-center space-x-2 hover:bg-blue-600 rounded-lg p-2 transition-colors">
+                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm font-medium">DJ</span>
+                </div>
+                <span className="hidden sm:block text-white text-sm font-medium">Dr. Sarah Johnson</span>
+                <ChevronDown className="text-blue-200 w-4 h-4" />
+              </a>
+            </Link>
 
             {/* Mobile menu button */}
             <div className="md:hidden">
