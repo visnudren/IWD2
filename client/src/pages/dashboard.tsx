@@ -46,14 +46,14 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Dashboard Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-medium text-gray-900 mb-2">
           Programme Performance Dashboard
         </h1>
         <p className="text-gray-600 mb-6">
-          Computer Science & Software Engineering Programme Overview
+          UEIS Programme Overview
         </p>
 
         {/* Key Performance Indicators */}
@@ -61,7 +61,7 @@ export default function Dashboard() {
       </div>
 
       {/* Dashboard Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="dashboard-grid grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Charts and Analytics */}
         <div className="lg:col-span-2 space-y-8">
           <CGPATrendsChart />
@@ -130,7 +130,7 @@ export default function Dashboard() {
           <Brain className="w-6 h-6 text-accent mr-3" />
           Innovative Features
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="card-grid grid grid-cols-1 md:grid-cols-3 gap-6">
           <PredictiveAnalytics />
           <CollaborativePlanning />
           <ThreeDVisualization />

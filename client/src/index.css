@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Optimize for 1920x1080 (16:9) resolution */
+@media (min-width: 1920px) {
+  .container {
+    max-width: 1800px;
+  }
+  
+  /* Ensure proper spacing and layout for large screens */
+  .dashboard-grid {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+  }
+  
+  .card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
+}
+
 :root {
   --background: hsl(0, 0%, 100%);
   --foreground: hsl(210, 25%, 7.8431%);
