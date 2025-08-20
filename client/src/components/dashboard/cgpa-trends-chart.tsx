@@ -34,19 +34,7 @@ export default function CGPATrendsChart() {
               size="sm" 
               className="bg-primary text-white hover:bg-primary/90"
             >
-              All
-            </Button>
-            <Button 
-              size="sm" 
-              variant="outline"
-            >
-              CS
-            </Button>
-            <Button 
-              size="sm" 
-              variant="outline"
-            >
-              SE
+              UEIS
             </Button>
           </div>
         </div>
@@ -76,21 +64,12 @@ export default function CGPATrendsChart() {
               <Legend />
               <Line 
                 type="monotone" 
-                dataKey="cs" 
+                dataKey="ueis" 
                 stroke="#3B82F6" 
                 strokeWidth={3}
-                name="Computer Science"
+                name="UEIS"
                 dot={{ fill: "#3B82F6", strokeWidth: 2, r: 6 }}
                 activeDot={{ r: 8, fill: "#3B82F6" }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="se" 
-                stroke="#10B981" 
-                strokeWidth={3}
-                name="Software Engineering"
-                dot={{ fill: "#10B981", strokeWidth: 2, r: 6 }}
-                activeDot={{ r: 8, fill: "#10B981" }}
               />
             </LineChart>
           </ResponsiveContainer>

@@ -92,8 +92,7 @@ export default function Reports() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Programmes</SelectItem>
-                    <SelectItem value="Computer Science">Computer Science</SelectItem>
-                    <SelectItem value="Software Engineering">Software Engineering</SelectItem>
+                    <SelectItem value="UEIS">UEIS</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

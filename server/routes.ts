@@ -80,9 +80,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/students", async (req, res) => {
     try {
       const filters = {
-        programme: req.query.programme as string,
-        semester: req.query.semester ? parseInt(req.query.semester as string) : undefined,
-        status: req.query.status as string,
+        programme: req.query.programme === 'all' ? undefined : req.query.programme as string,
+        semester: req.query.semester === 'all' ? undefined : req.query.semester ? parseInt(req.query.semester as string) : undefined,
+        status: req.query.status === 'all' ? undefined : req.query.status as string,
         search: req.query.search as string,
         limit: req.query.limit ? parseInt(req.query.limit as string) : 50,
         offset: req.query.offset ? parseInt(req.query.offset as string) : 0,

@@ -39,7 +39,7 @@ export default function AddStudentDialog({ isOpen, onClose, onSuccess }: AddStud
       firstName: "",
       lastName: "",
       email: "",
-      programme: "Computer Science",
+      programme: "UEIS",
       intakeYear: new Date().getFullYear(),
       currentSemester: 1,
       status: "Active",
@@ -163,8 +163,7 @@ export default function AddStudentDialog({ isOpen, onClose, onSuccess }: AddStud
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="Computer Science">Computer Science</SelectItem>
-                        <SelectItem value="Software Engineering">Software Engineering</SelectItem>
+                        <SelectItem value="UEIS">UEIS</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />

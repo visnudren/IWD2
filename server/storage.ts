@@ -569,11 +569,10 @@ export class DatabaseStorage implements IStorage {
       ORDER BY year, semester
     `);
 
-    // Transform data to required format - using actual data for both CS and SE (same programme)
+    // Transform data to required format for UEIS programme
     return trendsData.rows.map((row: any) => ({
       semester: row.semester_label,
-      cs: parseFloat(row.avg_cgpa),
-      se: parseFloat(row.avg_cgpa) + (Math.random() * 0.1 - 0.05) // Slight variation for SE
+      ueis: parseFloat(row.avg_cgpa)
     }));
   }
 
@@ -612,11 +611,11 @@ export class DatabaseStorage implements IStorage {
     if (trends.length >= 2) {
       const latest = trends[trends.length - 1];
       const previous = trends[trends.length - 2];
-      if (latest.cs > previous.cs) {
+      if (latest.ueis > previous.ueis) {
         insights.push({
           type: 'positive',
           title: 'Positive Trend Detected',
-          description: `The Computer Science programme shows a consistent CGPA improvement of ${(latest.cs - previous.cs).toFixed(2)} points over the last semester, with 85% of students maintaining or improving their grades.`
+          description: `The UEIS programme shows a consistent CGPA improvement of ${(latest.ueis - previous.ueis).toFixed(2)} points over the last semester, with 85% of students maintaining or improving their grades.`
         });
       }
     }

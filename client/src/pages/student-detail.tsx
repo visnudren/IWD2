@@ -45,9 +45,9 @@ export default function StudentDetail() {
   };
 
   const getProgrammeColor = (programme: string) => {
-    return programme === "Computer Science" 
+    return programme === "UEIS" 
       ? "bg-blue-100 text-blue-800" 
-      : "bg-purple-100 text-purple-800";
+      : "bg-gray-100 text-gray-800";
   };
 
   const chartData = cgpaHistory?.map(record => ({
