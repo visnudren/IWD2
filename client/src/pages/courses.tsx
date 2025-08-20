@@ -96,7 +96,7 @@ export default function Courses() {
                 <SelectValue placeholder="All Programmes" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Programmes</SelectItem>
+                <SelectItem value="all">All Programmes</SelectItem>
                 <SelectItem value="Computer Science">Computer Science</SelectItem>
                 <SelectItem value="Software Engineering">Software Engineering</SelectItem>
               </SelectContent>

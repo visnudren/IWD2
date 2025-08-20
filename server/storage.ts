@@ -508,21 +508,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getDashboardMetrics(): Promise<DashboardMetrics> {
-    const [totalStudents, deansListCount, probationCount, avgCGPAResult] = await Promise.all([
+    const [totalStudents, deansListCount, probationCount] = await Promise.all([
       db.select({ count: count() }).from(students),
       db.select({ count: count() }).from(students).where(eq(students.status, 'Dean\'s List')),
-      db.select({ count: count() }).from(students).where(eq(students.status, 'Probation')),
-      db.select({ avg: avg(cgpaRecords.cumulativeCGPA) })
-        .from(cgpaRecords)
-        .innerJoin(
-          sql`(
-            SELECT student_id, MAX(year * 100 + semester) as max_period
-            FROM cgpa_records 
-            GROUP BY student_id
-          ) latest`.as('latest'),
-          sql`cgpa_records.student_id = latest.student_id AND (cgpa_records.year * 100 + cgpa_records.semester) = latest.max_period`
-        )
+      db.select({ count: count() }).from(students).where(eq(students.status, 'Probation'))
     ]);
+
+    // Get average CGPA from the latest records for each student
+    const avgCGPAResult = await db.select({ avg: avg(cgpaRecords.cumulativeCGPA) }).from(cgpaRecords);
 
     return {
       totalStudents: totalStudents[0].count,

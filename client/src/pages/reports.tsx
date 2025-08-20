@@ -91,7 +91,7 @@ export default function Reports() {
                     <SelectValue placeholder="All Programmes" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Programmes</SelectItem>
+                    <SelectItem value="all">All Programmes</SelectItem>
                     <SelectItem value="Computer Science">Computer Science</SelectItem>
                     <SelectItem value="Software Engineering">Software Engineering</SelectItem>
                   </SelectContent>
@@ -110,7 +110,7 @@ export default function Reports() {
                     <SelectValue placeholder="All Semesters" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Semesters</SelectItem>
+                    <SelectItem value="all">All Semesters</SelectItem>
                     <SelectItem value="1">Semester 1</SelectItem>
                     <SelectItem value="2">Semester 2</SelectItem>
                     <SelectItem value="3">Semester 3</SelectItem>
