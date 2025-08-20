@@ -79,7 +79,7 @@ async function importData() {
     // Read and parse CSV
     const csvData = await new Promise((resolve, reject) => {
       const data = [];
-      fs.createReadStream('../attached_assets/2025-06-06 IWD Assignment1_1755678048822.csv')
+      fs.createReadStream('./attached_assets/2025-06-06 IWD Assignment1_1755685682593.csv')
         .pipe(csv())
         .on('data', (row) => data.push(row))
         .on('end', () => resolve(data))
