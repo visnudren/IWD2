@@ -14,7 +14,7 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 // Enums
-export const programmeEnum = pgEnum("programme", ["Computer Science", "Software Engineering"]);
+export const programmeEnum = pgEnum("programme", ["Computer Science", "Software Engineering", "UEIS"]);
 export const gradeEnum = pgEnum("grade", ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "F", "XF"]);
 export const statusEnum = pgEnum("status", ["Active", "Probation", "Dean's List", "Suspended", "Graduated"]);
 export const moduleStatusEnum = pgEnum("module_status", ["Completed", "In Progress", "Failed", "Exempted", "Credit Transfer"]);

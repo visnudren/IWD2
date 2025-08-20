@@ -112,7 +112,9 @@ export class DatabaseStorage implements IStorage {
             ilike(students.firstName, `%${trimmedSearch}%`),
             ilike(students.lastName, `%${trimmedSearch}%`),
             ilike(students.id, `%${trimmedSearch}%`),
-            ilike(students.email, `%${trimmedSearch}%`)
+            ilike(students.email, `%${trimmedSearch}%`),
+            // Search concatenated full name (first + last name)
+            sql`CONCAT(${students.firstName}, ' ', ${students.lastName}) ILIKE ${'%' + trimmedSearch + '%'}`
           )
         );
       }
