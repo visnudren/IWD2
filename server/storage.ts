@@ -105,14 +105,17 @@ export class DatabaseStorage implements IStorage {
       conditions.push(eq(students.status, filters.status as any));
     }
     if (filters?.search) {
-      conditions.push(
-        or(
-          ilike(students.firstName, `%${filters.search}%`),
-          ilike(students.lastName, `%${filters.search}%`),
-          ilike(students.id, `%${filters.search}%`),
-          ilike(students.email, `%${filters.search}%`)
-        )
-      );
+      const trimmedSearch = filters.search.trim();
+      if (trimmedSearch) {
+        conditions.push(
+          or(
+            ilike(students.firstName, `%${trimmedSearch}%`),
+            ilike(students.lastName, `%${trimmedSearch}%`),
+            ilike(students.id, `%${trimmedSearch}%`),
+            ilike(students.email, `%${trimmedSearch}%`)
+          )
+        );
+      }
     }
     
     if (conditions.length > 0) {

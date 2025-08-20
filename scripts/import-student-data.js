@@ -50,9 +50,12 @@ function parseName(fullName) {
   return { firstName, lastName };
 }
 
-// Determine programme (we'll assume UEIS = Software Engineering for now)
+// Determine programme - UEIS = University Engineering Information Systems 
 function getProgramme(programmeCode) {
-  return programmeCode === 'UEIS' ? 'Software Engineering' : 'Computer Science';
+  if (programmeCode === 'UEIS') {
+    return 'Computer Science'; // UEIS maps to Computer Science program
+  }
+  return 'Software Engineering'; // default fallback
 }
 
 // Extract credits from module code (simplified approach)
