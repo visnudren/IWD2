@@ -138,7 +138,7 @@ export default function StudentTable({
               </TableHead>
               <TableHead>Credits Earned</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Semester</TableHead>
+              <TableHead>Intake</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -188,7 +188,7 @@ export default function StudentTable({
                     </Badge>
                   </TableCell>
                   <TableCell className="text-sm text-gray-900">
-                    {student.currentSemester}
+                    {student.intake || 'N/A'}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-2">

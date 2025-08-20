@@ -80,6 +80,7 @@ export interface IStorage {
   // Import/Export operations
   importStudentsFromCSV(csvData: any[]): Promise<{ success: number; errors: string[] }>;
   exportStudentsToCSV(): Promise<any[]>;
+  createModulesFromCSV(): Promise<{ success: number; errors: string[] }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -101,8 +102,8 @@ export class DatabaseStorage implements IStorage {
     if (filters?.programme) {
       conditions.push(eq(students.programme, filters.programme as any));
     }
-    if (filters?.semester) {
-      conditions.push(eq(students.currentSemester, filters.semester));
+    if (filters?.semester && filters.semester !== 'all') {
+      conditions.push(eq(students.intake, filters.semester));
     }
     if (filters?.status) {
       conditions.push(eq(students.status, filters.status as any));
@@ -536,6 +537,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAtRiskStudents(): Promise<StudentWithDetails[]> {
+    // Get students with CGPA below 2.0 (probation criteria) or already on probation
     const atRiskStudents = await db
       .select()
       .from(students)
@@ -544,38 +546,45 @@ export class DatabaseStorage implements IStorage {
         sql`${students.id} IN (
           SELECT DISTINCT student_id 
           FROM cgpa_records 
-          WHERE cumulative_cgpa < 2.5
+          WHERE CAST(cumulative_cgpa AS DECIMAL) < 2.0
         )`
       ))
       .limit(10);
 
-    return Promise.all(
-      atRiskStudents.map(async (student) => {
-        const studentDetails = await this.getStudent(student.id);
-        return studentDetails!;
-      })
-    );
+    // Get detailed student info including current CGPA
+    const studentsWithDetails = [];
+    for (const student of atRiskStudents) {
+      const currentCGPA = await this.getCurrentCGPA(student.id);
+      studentsWithDetails.push({
+        ...student,
+        currentCGPA: currentCGPA || 0,
+        creditsEarned: 0, // TODO: Calculate from results
+        status: student.status
+      } as StudentWithDetails);
+    }
+    
+    return studentsWithDetails;
   }
 
   async getCGPATrends(): Promise<{ semester: string; cs: number; se: number }[]> {
-    // Get actual CGPA trends from real data grouped by semester and year
+    // Get actual CGPA trends from intake-based data
     const trendsData = await db.execute(sql`
       SELECT 
-        CONCAT('Sem ', semester, ' ', year) as semester_label,
-        semester,
-        year,
-        ROUND(AVG(cumulative_cgpa)::numeric, 2) as avg_cgpa,
-        COUNT(DISTINCT student_id) as student_count
-      FROM cgpa_records 
-      WHERE cumulative_cgpa > 0
-      GROUP BY semester, year
-      ORDER BY year, semester
+        s.intake as semester_label,
+        ROUND(AVG(CAST(cr.cumulative_cgpa AS DECIMAL))::numeric, 2) as avg_cgpa,
+        COUNT(DISTINCT cr.student_id) as student_count
+      FROM cgpa_records cr
+      JOIN students s ON cr.student_id = s.id
+      WHERE cr.cumulative_cgpa > 0 AND s.intake IS NOT NULL
+      GROUP BY s.intake
+      ORDER BY s.intake
     `);
 
-    // Transform data to required format for UEIS programme
+    // Transform data to required format for UEIS programme (using ueis for both cs and se since it's UEIS only)
     return trendsData.rows.map((row: any) => ({
       semester: row.semester_label,
-      ueis: parseFloat(row.avg_cgpa)
+      cs: parseFloat(row.avg_cgpa) || 0,
+      se: parseFloat(row.avg_cgpa) || 0  // Same value since we only have UEIS programme
     }));
   }
 
@@ -718,6 +727,84 @@ export class DatabaseStorage implements IStorage {
       entityType: 'student',
       entityId: 'bulk',
       description: `CSV import completed: ${success} students processed, ${errors.length} errors`,
+      performedBy: 'system'
+    });
+
+    return { success, errors };
+  }
+
+  async createModulesFromCSV(): Promise<{ success: number; errors: string[] }> {
+    const subjectsData = [
+      { code: "MPU3183N", name: "Penghayatan Etika dan Peradaban", credits: 3, programme: "UEIS" },
+      { code: "KBEN1033N", name: "Oral Communication", credits: 3, programme: "UEIS" },
+      { code: "XBCS1043N", name: "Computing Mathematics", credits: 3, programme: "UEIS" },
+      { code: "XBCS1143N", name: "Application Development", credits: 3, programme: "UEIS" },
+      { code: "XBCS1183N", name: "Database Management & Security", credits: 3, programme: "UEIS" },
+      { code: "MPU3333N", name: "Integrity and Anti Corruption", credits: 3, programme: "UEIS" },
+      { code: "MPU3323N", name: "Malaysia and Global Issues", credits: 3, programme: "UEIS" },
+      { code: "XBCS1123N", name: "Statistics", credits: 3, programme: "UEIS" },
+      { code: "MPU3143N", name: "Bahasa Melayu Komunikasi 2", credits: 3, programme: "UEIS" },
+      { code: "MPU3123N", name: "Tamadun Islam & Tamadun Asia", credits: 3, programme: "UEIS" },
+      { code: "KBRM3014N", name: "Research Methodology", credits: 4, programme: "UEIS" },
+      { code: "MPU3213", name: "Bahasa Kebangsaan A", credits: 3, programme: "UEIS" },
+      { code: "XBCS2103N", name: "Fundamentals of Object Oriented Programming", credits: 3, programme: "UEIS" },
+      { code: "XBCS2013N", name: "Principles of Software Engineering", credits: 3, programme: "UEIS" },
+      { code: "XBCS2193N", name: "HCI & User Experience", credits: 3, programme: "UEIS" },
+      { code: "MPU3193N", name: "Philosophy and Current Issues", credits: 3, programme: "UEIS" },
+      { code: "MPU3113", name: "Hubungan Etnik", credits: 3, programme: "UEIS" },
+      { code: "XBCS1153N", name: "System Analysis and Design", credits: 3, programme: "UEIS" },
+      { code: "XBIS1034N", name: "Foundation of Information Systems", credits: 3, programme: "UEIS" },
+      { code: "XBCS2163N", name: "Database Management Systems", credits: 3, programme: "UEIS" },
+      { code: "XBIS2054N", name: "Data Science", credits: 3, programme: "UEIS" },
+      { code: "XBIS3014N", name: "Enterprise Systems", credits: 4, programme: "UEIS" },
+      { code: "XBIS2034N", name: "E-Commerce", credits: 3, programme: "UEIS" },
+      { code: "XBIS2044N", name: "Enterprise Architecture", credits: 3, programme: "UEIS" },
+      { code: "XBIS3034N", name: "Business Process Management", credits: 3, programme: "UEIS" },
+      { code: "XBIS3024N", name: "Information Security", credits: 3, programme: "UEIS" },
+      { code: "XBIS3044N", name: "Digital Business Strategy", credits: 3, programme: "UEIS" },
+      { code: "XBMC3014N", name: "Internet & Web Development", credits: 4, programme: "UEIS" },
+      { code: "XBCS2074N", name: "Computer Networks", credits: 3, programme: "UEIS" },
+      { code: "XBIN2018N", name: "Industrial Training", credits: 3, programme: "UEIS" },
+      { code: "XBCT3064N", name: "Final Year Project A", credits: 3, programme: "UEIS" },
+      { code: "XBCT3074N", name: "Final Year Project B", credits: 3, programme: "UEIS" },
+      { code: "BBAC2014N", name: "Management Accounting", credits: 3, programme: "UEIS" },
+      { code: "BBAC1014N", name: "Financial Accounting", credits: 3, programme: "UEIS" },
+      { code: "BBMK2024N", name: "Marketing", credits: 3, programme: "UEIS" },
+      { code: "BBMG1013N", name: "Principles of Management", credits: 3, programme: "UEIS" },
+      { code: "BBEC1013N", name: "Principles of Economics", credits: 3, programme: "UEIS" },
+      { code: "BBFN1014N", name: "Principles of Finance", credits: 3, programme: "UEIS" },
+      { code: "BBMG3024N", name: "Strategic Management", credits: 3, programme: "UEIS" },
+      { code: "BBMG2014N", name: "Organizational Behaviour", credits: 3, programme: "UEIS" },
+      { code: "BBLG2034N", name: "Supply Chain Management", credits: 3, programme: "UEIS" },
+      { code: "XBCS2094N", name: "GUI Programming", credits: 3, programme: "UEIS" },
+      { code: "XBCS2064N", name: "Integrative Consultancy Project", credits: 3, programme: "UEIS" },
+      { code: "XBCS2124N", name: "Computational Intelligence", credits: 3, programme: "UEIS" },
+      { code: "XBIN3018N", name: "Internship", credits: 3, programme: "UEIS" }
+    ];
+
+    const errors: string[] = [];
+    let success = 0;
+
+    for (const subject of subjectsData) {
+      try {
+        await this.createModule({
+          code: subject.code,
+          name: subject.name,
+          credits: subject.credits,
+          programme: subject.programme as any,
+          description: `${subject.name} - ${subject.programme} Programme`
+        });
+        success++;
+      } catch (error) {
+        errors.push(`${subject.code}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+    }
+
+    await this.logActivity({
+      action: 'BULK_IMPORT',
+      entityType: 'module',
+      entityId: 'bulk',
+      description: `Module creation completed: ${success} modules processed, ${errors.length} errors`,
       performedBy: 'system'
     });
 

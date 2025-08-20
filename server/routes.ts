@@ -35,6 +35,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/modules/create-from-csv", async (req, res) => {
+    try {
+      const result = await storage.createModulesFromCSV();
+      res.json(result);
+    } catch (error) {
+      console.error("Error creating modules from CSV:", error);
+      res.status(500).json({ message: "Failed to create modules from CSV" });
+    }
+  });
+
   app.get("/api/dashboard/cgpa-trends", async (req, res) => {
     try {
       const trends = await storage.getCGPATrends();
